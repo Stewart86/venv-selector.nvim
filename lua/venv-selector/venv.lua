@@ -87,6 +87,9 @@ M.set_venv_and_system_paths = function(venv_row)
 	local venv_python = new_bin_path .. sys.path_sep .. sys.python_name
 
 	M.set_pythonpath(venv_python)
+	if config.settings.dap_enabled == true then
+		M.setup_dap_venv(venv_python)
+	end
 	utils.notify("Activated '" .. venv_python)
 
 	local current_system_path = vim.fn.getenv("PATH")
@@ -225,6 +228,12 @@ M.find_venv_manager_venvs = function()
 		openPop:close()
 	else
 		dbg("Found no venv manager directories to search for venvs.")
+	end
+end
+
+M.setup_dap_venv = function(venv_python)
+	require('dap-python').resolve_python = function()
+		return venv_python
 	end
 end
 
